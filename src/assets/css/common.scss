@@ -1,0 +1,42 @@
+// 字体大小转换
+@mixin property-dpr($property, $px-values) {
+    //判断参数是不是单个数字，若是
+    @if type-of($px-values)=="number" {
+        #{$property}: $px-values;
+        [data-dpr="2"] & {
+            #{$property}: $px-values * 2;
+        }
+        [data-dpr="3"] & {
+            #{$property}: $px-values * 3;
+        }
+    } //若为数组则
+    @else {
+        //新建两个空数组
+        $twodpr-values: ();
+        $threedpr-values: (); //遍历多值变量
+        @each $value in $px-values {
+            $twodpr-values: append($twodpr-values, $value*2);
+            $threedpr-values: append($threedpr-values, $value*3);
+        } // 返回处理后的多值变量
+        #{$property}: $px-values;
+        [data-dpr="2"] & {
+            #{$property}: $twodpr-values;
+        }
+        [data-dpr="3"] & {
+            #{$property}: $threedpr-values;
+        }
+    }
+}
+
+// iPhoneX 适配
+@mixin iPhoneX {
+    @media (min-height: 700px) and (-webkit-min-device-pixel-ratio: 3) {
+        @content;
+    }
+}
+
+// 直接换转rem
+@function pxTorem($px) {
+    //   $px为需要转换的字号
+    @return $px / 75 * 1rem;
+}
